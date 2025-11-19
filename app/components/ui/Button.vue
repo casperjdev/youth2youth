@@ -1,11 +1,10 @@
 <script setup lang="ts">
 type Props = {
-	text: string;
 	variant?: 'solid' | 'clear';
 	additionalClasses?: string;
 };
 
-const { text, variant = 'solid' } = defineProps<Props>();
+const { variant = 'solid' } = defineProps<Props>();
 </script>
 
 <template>
@@ -17,6 +16,6 @@ const { text, variant = 'solid' } = defineProps<Props>();
 				: ' text-neutral-50 hover:text-neutral-400',
 			'px-2 py-0.5 rounded-full text-2xs w-max h-max border border-neutral-50 hover:border-neutral-400 hover:drop-shadow-2xl transition-colors cursor-pointer',
 		]">
-		{{ text }}
+		<slot />
 	</button>
 </template>

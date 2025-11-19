@@ -22,7 +22,7 @@ definePageMeta({
 				from hobbies to real life advice.
 			</p>
 			<NuxtLink>
-				<Button class="px-4 py-1" text="Start Learning" />
+				<Button variant="solid" additional-classes="px-4 py-1">Start Learning</Button>
 			</NuxtLink>
 		</div>
 	</section>

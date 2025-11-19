@@ -20,4 +20,11 @@ export default defineNuxtConfig({
 			pathPrefix: false,
 		},
 	],
+	icon: {
+		mode: 'css',
+		cssLayer: 'base',
+		serverBundle: {
+			collections: ['cib'],
+		},
+	},
 });
