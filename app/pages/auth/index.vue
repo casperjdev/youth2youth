@@ -27,18 +27,18 @@ function switchTo(target: 'signin' | 'register') {
 </script>
 <template>
 	<main
-		class="w-svw h-svh flex justify-center items-center bg-cover bg-center p-4"
+		class="w-svw h-svh flex justify-center items-center bg-cover bg-center bg-fixed p-4"
 		:style="{ backgroundImage: `url(${bgImage})` }">
 		<!-- powrot -->
 
 		<NuxtLink class="fixed top-4 left-4" to="/">
-			<Button variant="solid" class="block">Home</Button>
+			<Button variant="solid" class="block">Return</Button>
 		</NuxtLink>
 
 		<Card
-			additional-classes="relative w-full max-w-xl bg-black/50 text-neutral-950/10! items-end backdrop-blur-sm flex md:flex-row flex-col-reverse gap-4">
+			additional-classes="relative w-full max-w-xl bg-black/10! text-neutral-950/10! items-end backdrop-blur-sm flex md:flex-row flex-col-reverse gap-4">
 			<!-- Left panel -->
-			<div class="w-full md:absolute top-0 left-0 md:p-4 order-1">
+			<div class="w-full md:absolute top-0 left-0 md:p-2 order-1">
 				<span
 					class="block w-full font-extrabold italic text-base md:text-start text-center text-transparent bg-linear-180 from-50% from-neutral-50 to-100% to-neutral-400 bg-clip-text">
 					youth2youth

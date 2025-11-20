@@ -17,6 +17,7 @@
 	--pattern-color: currentColor;
 
 	background-size: 10px 10px;
+	background-position: fixed;
 	background-image: repeating-linear-gradient(
 		--value([angle]),
 		var(--pattern-color) 0px,
@@ -28,7 +29,7 @@
 
 @utility pattern-thin-* {
 	background-size: 10px 10px;
-
+	background-position: fixed;
 	background-image: repeating-linear-gradient(
 		--value([angle]),
 		currentColor 0px,
