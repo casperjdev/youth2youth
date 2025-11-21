@@ -27,4 +27,8 @@ export default defineNuxtConfig({
 			collections: ['cib'],
 		},
 	},
+	runtimeConfig: {
+		strapiUrl: process.env.STRAPI_URL,
+		public: {},
+	},
 });

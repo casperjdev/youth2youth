@@ -6,12 +6,39 @@ const showPassword = ref(false);
 const emit = defineEmits<{
 	(e: 'switch-mode'): void;
 }>();
+
+const email = ref('');
+const password = ref('');
+
+const { login } = useAuth();
+const error = ref<string | null>(null);
+const loading = ref(false);
+
+async function handleLogin() {
+	loading.value = true;
+	error.value = null;
+
+	try {
+		await login(email.value, password.value);
+	} catch (err: any) {
+		error.value = err?.data?.message || 'Registration failed';
+	}
+
+	const { user } = useAuth();
+
+	console.log(user?.value);
+
+	loading.value = false;
+}
 </script>
 
 <template>
-	<div class="flex w-full h-full items-center justify-center md:mt-4 flex-col gap-2">
+	<form
+		@submit.prevent="handleLogin"
+		class="flex w-full h-full items-center justify-center md:mt-4 flex-col gap-2">
 		<label for="email" class="sr-only">E-Mail</label>
 		<input
+			v-model="email"
 			type="email"
 			name="email"
 			placeholder="E-mail"
@@ -21,6 +48,7 @@ const emit = defineEmits<{
 		<label for="password" class="sr-only">Password</label>
 		<div class="relative w-full">
 			<input
+				v-model="password"
 				:type="showPassword ? 'text' : 'password'"
 				name="password"
 				placeholder="Password"
@@ -35,7 +63,9 @@ const emit = defineEmits<{
 			</button>
 		</div>
 
-		<Button variant="solid">Sign Up</Button>
+		<Button variant="solid" :handleLogin>Sign Up</Button>
+
+		<p v-if="error" class="error">{{ error }}</p>
 
 		<button
 			class="text-white font-extralight text-2xs hover:cursor-pointer"
@@ -47,5 +77,5 @@ const emit = defineEmits<{
 		<a class="-mt-2 text-white font-extralight text-2xs hover:cursor-pointer">
 			Trouble logging in?
 		</a>
-	</div>
+	</form>
 </template>

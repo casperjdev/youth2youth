@@ -28,6 +28,7 @@
 	},
 	"packageManager": "pnpm@9.15.9",
 	"devDependencies": {
-		"@iconify-json/cib": "^1.2.3"
+		"@iconify-json/cib": "^1.2.3",
+		"@types/node": "^24.10.1"
 	}
 }
