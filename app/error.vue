@@ -40,6 +40,11 @@ const errorConfig: Record<number, { title: string; defaultMessage: string; icon:
     defaultMessage: 'The page you are looking for does not exist.',
     icon: '🔍',
   },
+  418: {
+    title: "418 I'm a teapot!",
+    defaultMessage: 'This webpage is a teapot, make yourself some tea.',
+    icon: '🫖'
+  },
   500: {
     title: '500 Internal Server Error',
     defaultMessage: 'The server encountered an unexpected condition.',
@@ -73,7 +78,7 @@ const displayMessage = detectedMessage || config.defaultMessage;
 
         <!-- Error Message -->
         <p class="text-neutral-400 text-center leading-relaxed text-sm sm:text-base px-2">
-          {{ displayMessage }}
+          {{ displayMessage }} <span v-if="detectedStatusCode === 418"> - Shame on you.</span>
         </p>
       </div>
       <div class="p-4 sm:p-6 pt-0 flex flex-col w-full items-center justify-center space-y-2">
