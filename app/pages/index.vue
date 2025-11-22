@@ -22,8 +22,11 @@ definePageMeta({
 				from hobbies to real life advice.
 			</p>
 			<NuxtLink to="/auth?mode=signin">
-				<Button variant="solid" additional-classes="px-4 py-1">Start Learning</Button>
+				<Button variant="clear" additional-classes="px-4 py-1">Start Learning</Button>
 			</NuxtLink>
+      <NuxtLink to="/mission-en">
+        <Button variant="solid" additional-classes="px-4 py-1">Our Mission</Button>
+      </NuxtLink>
 		</div>
 	</section>
 	<Separator />
