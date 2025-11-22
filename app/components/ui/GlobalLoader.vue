@@ -1,6 +1,8 @@
 <template>
 	<transition name="fade-out">
-		<div v-if="loading" class="fixed inset-0 flex items-center justify-center bg-neutral-950 z-500">
+		<div
+			v-show="loading"
+			class="fixed inset-0 flex items-center justify-center bg-neutral-950 z-500">
 			<Icon name="lucide:loader" class="animate-spin w-8 h-8 text-neutral-50" />
 		</div>
 	</transition>

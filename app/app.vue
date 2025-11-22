@@ -3,14 +3,12 @@ import { useLoading } from '~/composables/useLoading';
 import { onMounted, nextTick, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
 
-const { hide, loading } = useLoading();
+const { hide } = useLoading();
 const router = useRouter();
 
 // Hide loader after initial hydration
 onMounted(() => {
-	nextTick(() => {
-		requestAnimationFrame(() => hide());
-	});
+	nextTick(() => hide());
 });
 
 // Hide loader after every route change
@@ -29,7 +27,7 @@ router.afterEach(() => {
 			rel="stylesheet" />
 	</Head>
 	<NuxtLayout>
-		<GlobalLoader :hidden="!loading" />
+		<GlobalLoader />
 		<NuxtPage />
 	</NuxtLayout>
 	<NuxtRouteAnnouncer />
