@@ -109,17 +109,13 @@ const loadLesson = (id: string | number) => {
   if (lesson) {
     lessonName.value = lesson.title || '';
 
-    // --- DECODER: Szukamy ukrytego linku w treści ---
     let rawContent = lesson.content || '';
-    // Regex łapie <!-- video-url: https://youtube... -->
     const videoMatch = rawContent.match(/<!--\s*videoUrl:(.*?)\s*-->/);
 
     if (videoMatch && videoMatch[1]) {
       videoUrl.value = videoMatch[1].trim();
-      // Czyścimy edytor z tego komentarza
       content.value = rawContent.replace(videoMatch[0], '').trim();
     } else {
-      // Fallback do pamięci lub pusto
       videoUrl.value = (lesson as any).videoUrl || '';
       content.value = rawContent;
     }
@@ -147,7 +143,6 @@ const saveCourse = async () => {
   saving.value = true;
 
   try {
-    // Prosty payload - wysyłamy po prostu string URL
     const payloadLessons = lessons.value.map(l => ({
       documentId: l.documentId,
       title: l.title,
@@ -213,7 +208,6 @@ const parsedContent = computed(() => marked.parse(content.value));
 const embedUrl = computed(() => {
   if (!videoUrl.value) return null;
 
-  // Wyciągamy ID z linku YouTube (obsługuje youtu.be, youtube.com/watch, embed)
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
   const match = videoUrl.value.match(regExp);
 
@@ -221,7 +215,7 @@ const embedUrl = computed(() => {
     return `https://www.youtube.com/embed/${match[2]}`;
   }
 
-  return null; // Jeśli to nie YouTube, nie wyświetlamy iframe (bezpieczniej)
+  return null;
 });
 </script>
 
