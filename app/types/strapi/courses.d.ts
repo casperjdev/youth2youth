@@ -22,6 +22,18 @@ export interface CourseList {
     };
 }
 
+export interface CourseList {
+	data: Course[];
+	meta: {
+		pagination: {
+			page: number;
+			pageSize: number;
+			pageCount: number;
+			total: number;
+		};
+	};
+}
+
 export interface Tag {
     id: number;
     documentId: string;
