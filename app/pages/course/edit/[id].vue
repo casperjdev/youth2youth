@@ -34,20 +34,27 @@ const toastMessage = ref('Changes Saved');
 // --- FETCHING ---
 const fetchCourseData = async () => {
   try {
-    // Let's grab the whole response first to be safe
     const response = await $fetch<any>(`/api/courses/${courseId}`);
 
-    // Handle the Double Data Wrapper
-    // We check if 'data' exists, and if it has a nested 'data' property
-    const realCourseData = response.data?.data || response.data;
+    // LOG DLA CIEBIE: Zobacz co dokładnie przylatuje
+    console.log('API Response structure:', response);
+
+    // FIX: Twój serwer zwraca obiekt { res: ... }, więc musimy to stamtąd wyciągnąć.
+    // Fallback do 'response' w razie gdyby struktura się zmieniła.
+    const strapiResponse = response.res || response;
+
+    // Teraz standardowa walka ze Strapi (czy to data.data czy samo data)
+    const realCourseData = strapiResponse?.data || strapiResponse;
 
     if (realCourseData) {
       courseData.value = realCourseData;
 
-      // Now we can safely access the lessons array
-      lessons.value = realCourseData.lessons || [];
+      // Bezpieczny dostęp do lekcji
+      // Czasem Strapi zwraca tablicę bezpośrednio w attributes, czasem trzeba wejść głębiej
+      // Zakładam, że tutaj masz populate=* więc powinno być w obiekcie
+      lessons.value = realCourseData.lessons || realCourseData.attributes?.lessons || [];
 
-      console.log('Lessons loaded:', lessons.value.length); // Quick sanity check
+      console.log('Lessons loaded:', lessons.value.length);
       return true;
     }
   } catch (e) {
@@ -59,17 +66,20 @@ const fetchCourseData = async () => {
 
 onMounted(async () => {
   if (!courseId || courseId === 'undefined') {
+    console.log("n1")
     navigateTo('/home');
     return;
   }
 
   const success = await fetchCourseData();
+  console.log(success)
   if (success && lessons.value.length > 0) {
     const firstId = lessons.value[0].documentId || lessons.value[0].id;
     loadLesson(firstId);
   } else if (success) {
     createNewLesson();
   } else {
+    console.log("n2")
     navigateTo('/home');
   }
 

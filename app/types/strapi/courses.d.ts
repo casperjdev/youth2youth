@@ -22,18 +22,6 @@ export interface CourseList {
     };
 }
 
-export interface CourseList {
-	data: Course[];
-	meta: {
-		pagination: {
-			page: number;
-			pageSize: number;
-			pageCount: number;
-			total: number;
-		};
-	};
-}
-
 export interface Tag {
     id: number;
     documentId: string;
@@ -47,6 +35,7 @@ export interface Lesson {
     documentId: string;
     title: string;
     content: string;
+    videoUrl?: string;
     createdAt: string;
     updatedAt: string;
 }
