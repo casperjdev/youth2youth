@@ -124,7 +124,7 @@ async function handleRegister() {
 			</div>
 		</div>
 
-		<!-- EULA -->
+		<!-- EULAS -->
 		<div class="eulagroup mt-1 -mb-1 flex flex-row gap-1">
 			<input type="checkbox" v-model="terms" name="eula" id="eula-register" />
 			<label
