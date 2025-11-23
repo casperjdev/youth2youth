@@ -11,7 +11,7 @@ export default defineEventHandler<Promise<{ user: StrapiUser }>>(async (event) =
 	};
 
 	try {
-		const response = await $fetch<StrapiAuthResponse>(`${STRAPI}/auth/local`, {
+		const response = await $fetch<StrapiAuthResponse>(`${STRAPI}/auth/local/register`, {
 			method: 'POST',
 			body: {
 				username: body.username,
@@ -32,8 +32,8 @@ export default defineEventHandler<Promise<{ user: StrapiUser }>>(async (event) =
 	} catch (err) {
 		const e = err as { response?: StrapiErrorResponse };
 		throw createError({
-			statusCode: e.response?.error.status || 500,
-			statusMessage: e.response?.error.message || 'Registration failed',
+			statusCode: 400,
+			statusMessage: 'Username is already taken',
 		});
 	}
 });

@@ -6,7 +6,6 @@ export interface StrapiUser {
 	blocked: boolean;
 	createdAt: string;
 	updatedAt: string;
-	// Add fields you have in Strapi user schema
 }
 
 export interface StrapiAuthResponse {
@@ -15,6 +14,7 @@ export interface StrapiAuthResponse {
 }
 
 export interface StrapiErrorResponse {
+	data: null;
 	error: {
 		status: number;
 		name: string;

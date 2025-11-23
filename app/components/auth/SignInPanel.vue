@@ -10,25 +10,18 @@ const emit = defineEmits<{
 const email = ref('');
 const password = ref('');
 
-const { login } = useAuth();
-const error = ref<string | null>(null);
-const loading = ref(false);
+const { login, loading } = useAuth();
+
+const toast = useToast();
 
 async function handleLogin() {
-	loading.value = true;
-	error.value = null;
-
 	try {
 		await login(email.value, password.value);
+
+		toast.success({ title: 'Success!', message: 'Signed in successfully!' });
 	} catch (err: any) {
-		error.value = err?.data?.message || 'Registration failed';
+		toast.error({ title: 'Error!', message: err?.data?.message || 'An Unknwon error occured' });
 	}
-
-	const { user } = useAuth();
-
-	console.log(user?.value);
-
-	loading.value = false;
 }
 </script>
 
@@ -63,9 +56,10 @@ async function handleLogin() {
 			</button>
 		</div>
 
-		<Button variant="solid" :handleLogin>Sign Up</Button>
-
-		<p v-if="error" class="error">{{ error }}</p>
+		<Button class="grid place-items-center" variant="solid" :handleLogin>
+			<span v-if="!loading">Sign In</span>
+			<Icon v-else name="lucide:loader-2" class="animate-spin w-3 h-3" />
+		</Button>
 
 		<button
 			class="text-white font-extralight text-2xs hover:cursor-pointer"

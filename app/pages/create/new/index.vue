@@ -58,14 +58,7 @@ async function handleCreateCourse() {
 	error.value = null;
 
 	try {
-		// Simulate API call - replace this with your actual endpoint logic
-		// await $fetch('/api/courses', { method: 'POST', body: formData.value })
-
-		console.log('Sending data to server...', formData.value);
 		await new Promise((resolve) => setTimeout(resolve, 1500)); // Fake delay
-
-		// Success logic (redirect, toast, etc.)
-		console.log('Course created successfully!');
 	} catch (err: any) {
 		error.value = err?.data?.message || 'Failed to create course. Try again.';
 		console.error(err);

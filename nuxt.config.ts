@@ -12,6 +12,7 @@ export default defineNuxtConfig({
 		'@nuxt/icon',
 		'@nuxt/image',
 		'@nuxt/hints',
+		'nuxt-toast',
 	],
 	vite: { plugins: [tailwindcss()] },
 	components: [
@@ -35,4 +36,12 @@ export default defineNuxtConfig({
 		inlineRouteRules: true,
 	},
 	ssr: true,
+	toast: {
+		settings: {
+			position: 'bottomCenter',
+			timeout: 2000,
+			closeOnEscape: true,
+			closeOnClick: true,
+		},
+	},
 });

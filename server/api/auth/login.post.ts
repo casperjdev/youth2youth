@@ -27,8 +27,8 @@ export default defineEventHandler<Promise<{ user: StrapiUser }>>(async (event) =
 	} catch (err) {
 		const e = err as { response?: StrapiErrorResponse };
 		throw createError({
-			statusCode: e.response?.error.status || 500,
-			statusMessage: e.response?.error.message || 'Auth failed',
+			statusCode: 400,
+			statusMessage: 'Invalid identifier or password',
 		});
 	}
 });
