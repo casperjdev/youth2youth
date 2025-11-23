@@ -23,20 +23,21 @@ export interface CourseList {
 }
 
 export interface Tag {
-	id: number;
-	documentId: string;
-	label: string;
-	createdAt: string;
-	updatedAt: string;
+    id: number;
+    documentId: string;
+    label: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface Lesson {
-	id: number;
-	documentId: string;
-	title: string;
-	content: string;
-	createdAt: string;
-	updatedAt: string;
+    id: number;
+    documentId: string;
+    title: string;
+    content: string;
+    videoUrl?: string; // Added this to support video saving
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface StrapiMediaFormat {

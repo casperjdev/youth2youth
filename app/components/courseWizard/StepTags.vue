@@ -1,89 +1,142 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const props = defineProps<{
-	modelValue: string[];
-	slideDirection: string;
-	isActive: boolean;
+  modelValue: string[];
+  slideDirection: string;
+  isActive: boolean;
 }>();
 
 const emit = defineEmits<{
-	'update:modelValue': [value: string[]];
+  (e: 'update:modelValue', value: string[]): void;
 }>();
 
-const currentTag = ref('');
+// Available tags from Strapi
+const availableTags = ref<Array<{ id: number; label: string }>>([]);
+const loadingTags = ref(true);
+const tagsError = ref<string | null>(null);
 
-const handleAddTag = (e: KeyboardEvent) => {
-	if (e.key === 'Enter' && currentTag.value.trim()) {
-		e.preventDefault();
-		emit('update:modelValue', [...props.modelValue, currentTag.value.trim()]);
-		currentTag.value = '';
-	}
+// Fetch tags from Strapi
+onMounted(async () => {
+  try {
+    loadingTags.value = true;
+    const response = await $fetch<{ data: Array<{ id: number; label: string }> }>(
+        '/api/tags',
+        {
+          method: 'GET',
+        }
+    );
+
+    availableTags.value = response.data || [];
+    console.log('✅ Loaded tags:', availableTags.value.length);
+  } catch (err: any) {
+    console.error('❌ Failed to load tags:', err);
+    tagsError.value = 'Failed to load tags';
+  } finally {
+    loadingTags.value = false;
+  }
+});
+
+const toggleTag = (label: string) => {
+  const current = [...props.modelValue];
+  const index = current.indexOf(label);
+
+  if (index > -1) {
+    // Remove tag
+    current.splice(index, 1);
+  } else {
+    // Add tag
+    current.push(label);
+  }
+
+  emit('update:modelValue', current);
 };
 
-const removeTag = (indexToRemove: number) => {
-	emit(
-		'update:modelValue',
-		props.modelValue.filter((_, index) => index !== indexToRemove)
-	);
+const isSelected = (label: string) => {
+  return props.modelValue.includes(label);
 };
 </script>
 
 <template>
-	<div
-		class="text-neutral-50 flex flex-col items-center transition-all duration-300"
-		:class="{
-			'opacity-0 translate-x-8': slideDirection === 'back',
-			'opacity-100 translate-x-0': slideDirection === '',
-		}">
-		<h3 class="text-2xs sm:text-xs font-extrabold mb-2 text-center">Add some tags.</h3>
-		<div class="w-full my-2">
-			<input
-				v-model="currentTag"
-				type="text"
-				placeholder="Type a tag and press Enter"
-				@keydown="handleAddTag"
-				class="w-full rounded-md p-1 text-white font-light text-2xs backdrop-blur-[1px] bg-white/5 border border-neutral-200/80" />
-			<div
-				class="flex flex-nowrap overflow-x-scroll md:flex-wrap gap-2 mt-3 pb-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent hover:scrollbar-thumb-white/40">
-				<span
-					v-for="(tag, index) in modelValue"
-					:key="index"
-					class="bg-white/20 max-md:text-2xs text-white px-3 py-1.5 sm:py-1 rounded-full text-sm sm:text-base flex items-center gap-2 h-fit whitespace-nowrap shrink-0">
-					{{ tag }}
-					<button
-						@click="removeTag(index)"
-						class="hover:text-red-300 min-w-6 min-h-6 flex items-center justify-center">
-						<Icon name="lucide:x" class="w-3.5 h-3.5 sm:w-3 sm:h-3" />
-					</button>
-				</span>
-			</div>
-		</div>
-	</div>
+  <div
+      :class="[
+      'transition-all duration-300',
+      slideDirection === 'next' && !isActive && '-translate-x-full opacity-0',
+      slideDirection === 'back' && !isActive && 'translate-x-full opacity-0',
+      isActive && 'translate-x-0 opacity-100'
+    ]"
+  >
+    <div class="flex flex-col gap-4 px-6">
+      <div>
+        <h2 class="text-2xl font-semibold mb-1 text-white">Select Tags</h2>
+        <p class="text-sm text-neutral-300">
+          Choose tags that describe your course (optional)
+        </p>
+      </div>
+
+      <div v-if="loadingTags" class="flex items-center justify-center py-8">
+        <Icon name="lucide:loader-2" class="animate-spin w-6 h-6 text-white" />
+      </div>
+
+      <div v-else-if="tagsError" class="text-red-400 text-sm">
+        {{ tagsError }}
+      </div>
+
+      <div v-else-if="availableTags.length === 0" class="text-neutral-400 text-sm">
+        No tags available. Contact admin to create tags.
+      </div>
+
+      <div v-else class="flex flex-wrap gap-2 max-h-64 overflow-y-auto py-2">
+        <button
+            v-for="tag in availableTags"
+            :key="tag.id"
+            type="button"
+            @click="toggleTag(tag.label)"
+            :class="[
+            'px-3 py-1.5 rounded-full text-sm font-medium transition-all',
+            'border-2 hover:scale-105 active:scale-95',
+            isSelected(tag.label)
+              ? 'bg-white text-neutral-900 border-white'
+              : 'bg-white/10 text-white border-white/30 hover:bg-white/20'
+          ]"
+        >
+          <span class="flex items-center gap-1.5">
+            <Icon
+                v-if="isSelected(tag.label)"
+                name="lucide:check"
+                class="w-3 h-3"
+            />
+            {{ tag.label }}
+          </span>
+        </button>
+      </div>
+
+      <div v-if="modelValue.length > 0" class="mt-2">
+        <p class="text-xs text-neutral-400">
+          {{ modelValue.length }} tag{{ modelValue.length !== 1 ? 's' : '' }} selected
+        </p>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-/* Custom scrollbar styles */
-.scrollbar-thin::-webkit-scrollbar {
-	height: 6px;
+/* Custom scrollbar for tags container */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-track {
-	background: transparent;
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-thumb {
-	background: rgba(255, 255, 255, 0.2);
-	border-radius: 3px;
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
 }
 
-.scrollbar-thin::-webkit-scrollbar-thumb:hover {
-	background: rgba(255, 255, 255, 0.4);
-}
-
-/* Firefox scrollbar */
-.scrollbar-thin {
-	scrollbar-width: thin;
-	scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 </style>
