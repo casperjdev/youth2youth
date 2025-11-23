@@ -54,6 +54,7 @@ const fetchCourseData = async () => {
       // Zakładam, że tutaj masz populate=* więc powinno być w obiekcie
       lessons.value = realCourseData.lessons || realCourseData.attributes?.lessons || [];
 
+
       console.log('Lessons loaded:', lessons.value.length);
       return true;
     }
@@ -111,7 +112,7 @@ const loadLesson = (id: string | number) => {
     // --- DECODER: Szukamy ukrytego linku w treści ---
     let rawContent = lesson.content || '';
     // Regex łapie <!-- video-url: https://youtube... -->
-    const videoMatch = rawContent.match(/<!--\s*video-url:(.*?)\s*-->/);
+    const videoMatch = rawContent.match(/<!--\s*videoUrl:(.*?)\s*-->/);
 
     if (videoMatch && videoMatch[1]) {
       videoUrl.value = videoMatch[1].trim();

@@ -36,9 +36,13 @@ export default defineEventHandler(async (event) => {
             let safeContent = lesson.content || '';
             const videoUrl = (lesson as any).videoUrl;
 
-            if (videoUrl && videoUrl.trim()) {
-                safeContent = safeContent.replace(/<!--.*?-->/g, '').trim();
-                    safeContent += `\n\n`;
+            // Remove any existing video-url comments (HTML comment format)
+            // This regex matches: <!-- videoUrl: ... --> even if it spans lines
+            safeContent = safeContent.replace(/<!--\s*videoUrl:\s*[\s\S]*?-->/g, '').trim();
+
+            // If a video URL exists, append it as the magic comment (or change format to suit frontend)
+            if (videoUrl && String(videoUrl).trim()) {
+                safeContent += `\n\n<!-- videoUrl: ${String(videoUrl).trim()} -->`;
             }
 
             const payload = {
@@ -47,7 +51,7 @@ export default defineEventHandler(async (event) => {
                 publishedAt: new Date().toISOString(),
             };
 
-            // --- CREATE or UPDATE ---
+            // rest of your create/update logic...
             const isTemp = lesson.documentId && lesson.documentId.toString().startsWith('temp-');
 
             if (isTemp) {
@@ -66,6 +70,7 @@ export default defineEventHandler(async (event) => {
                 validLessonIds.push(lesson.documentId);
             }
         }
+
 
         // --- 3. UPDATE COURSE RELATIONS ---
         const { data } = await $fetch<{ data: Course }>(`${strapiUrl}/courses/${courseId}`, {
