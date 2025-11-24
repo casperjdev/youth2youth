@@ -1,3 +1,5 @@
+import type { Tag } from './courses';
+
 export interface StrapiUser {
 	id: number;
 	username: string;
@@ -6,6 +8,7 @@ export interface StrapiUser {
 	blocked: boolean;
 	createdAt: string;
 	updatedAt: string;
+	tags: Tag[];
 }
 
 export interface StrapiAuthResponse {

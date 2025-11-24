@@ -8,7 +8,7 @@ export default defineEventHandler<Promise<{ user: StrapiUser } | null>>(async (e
 	if (!jwt) return null;
 
 	try {
-		const user = await $fetch<StrapiUser>(`${STRAPI}/users/me`, {
+		const user = await $fetch<StrapiUser>(`${STRAPI}/users/me?populate=*`, {
 			headers: { Authorization: `Bearer ${jwt}` },
 		});
 
