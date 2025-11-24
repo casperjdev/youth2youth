@@ -23,7 +23,7 @@ const { user } = useAuth();
 		<div class="flex-1 lg:grid grid-rows-2 flex flex-col gap-2">
 			<Card
 				class="flex-1 bg-black/50! text-neutral-950/50! backdrop-blur-sm flex flex-col gap-2 max-h-64">
-				<h1 class="text-neutral-50 font-extrabold sm:text-xs text-2xs">Recent Courses</h1>
+				<h1 class="text-neutral-50 font-extrabold sm:text-xs text-2xs">Continue</h1>
 				<div class="grid sm:grid-cols-2 grid-cols-1 gap-2 overflow-auto h-full"></div>
 			</Card>
 			<Card
