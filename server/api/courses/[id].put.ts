@@ -10,64 +10,59 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
 
     try {
-        // --- 1. SECURITY CHECK ---
-        const [user, { data: currentCourse }] = await Promise.all([
+        // --- 1) auth & ownership check ---
+        const [user, { data: course }] = await Promise.all([
             $fetch<any>(`${strapiUrl}/users/me`, { headers: { Authorization: `Bearer ${jwt}` } }),
             $fetch<{ data: any }>(`${strapiUrl}/courses/${courseId}?populate=authors`, {
-                headers: { Authorization: `Bearer ${jwt}` }
-            })
+                headers: { Authorization: `Bearer ${jwt}` },
+            }),
         ]);
 
-        if (!currentCourse) {
-            throw createError({ statusCode: 404, statusMessage: 'Course not found' });
-        }
+        if (!course) throw createError({ statusCode: 404, statusMessage: 'Course not found' });
 
-        const isAuthor = currentCourse.authors?.some((a: any) => a.id === user.id || a.documentId === user.documentId);
+        const isAuthor = course.authors?.some((a: any) =>
+            a.id === user.id || a.documentId === user.documentId
+        );
+        if (!isAuthor) throw createError({ statusCode: 403, statusMessage: 'Forbidden: You do not own this course' });
 
-        if (!isAuthor) {
-            throw createError({ statusCode: 403, statusMessage: 'Forbidden: You do not own this course' });
-        }
-
-        // --- 2. LESSONS LOGIC ---
+        // --- 2) lessons processing: create temp lessons, update existing ones ---
         const validLessonIds: string[] = [];
-        const lessonsFromFrontend = body.lessons || [];
+        const lessons = body.lessons || [];
 
-        for (const lesson of lessonsFromFrontend) {
-            let safeContent = lesson.content || '';
-            const videoUrl = (lesson as any).videoUrl;
-            safeContent = safeContent.replace(/<!--\s*videoUrl:\s*[\s\S]*?-->/g, '').trim();
-
-            if (videoUrl && String(videoUrl).trim()) {
-                safeContent += `\n\n<!-- videoUrl: ${String(videoUrl).trim()} -->`;
-            }
+        for (const l of lessons) {
+            // normalize content: remove old inline video marker, then append if provided
+            let content = (l.content || '').replace(/<!--\s*videoUrl:\s*[\s\S]*?-->/g, '').trim();
+            const videoUrl = (l as any).videoUrl;
+            if (videoUrl && String(videoUrl).trim()) content += `\n\n<!-- videoUrl: ${String(videoUrl).trim()} -->`;
 
             const payload = {
-                title: lesson.title,
-                content: safeContent,
+                title: l.title,
+                content,
                 publishedAt: new Date().toISOString(),
             };
 
-            const isTemp = lesson.documentId && lesson.documentId.toString().startsWith('temp-');
+            const isTemp = l.documentId && String(l.documentId).startsWith('temp-');
 
             if (isTemp) {
+                // create new lesson and collect its documentId
                 const created = await $fetch<{ data: { documentId: string } }>(`${strapiUrl}/lessons`, {
                     method: 'POST',
                     headers: { Authorization: `Bearer ${jwt}` },
-                    body: { data: payload }
+                    body: { data: payload },
                 });
                 validLessonIds.push(created.data.documentId);
-            } else if (lesson.documentId) {
-                await $fetch(`${strapiUrl}/lessons/${lesson.documentId}`, {
+            } else if (l.documentId) {
+                // update existing lesson in-place
+                await $fetch(`${strapiUrl}/lessons/${l.documentId}`, {
                     method: 'PUT',
                     headers: { Authorization: `Bearer ${jwt}` },
-                    body: { data: payload }
+                    body: { data: payload },
                 });
-                validLessonIds.push(lesson.documentId);
+                validLessonIds.push(l.documentId);
             }
         }
 
-
-        // --- 3. UPDATE COURSE RELATIONS ---
+        // --- 3) attach lessons to course ---
         const { data } = await $fetch<{ data: Course }>(`${strapiUrl}/courses/${courseId}`, {
             method: 'PUT',
             headers: { Authorization: `Bearer ${jwt}` },
@@ -75,11 +70,10 @@ export default defineEventHandler(async (event) => {
         });
 
         return data;
-
-    } catch (error: any) {
+    } catch (err: any) {
         throw createError({
-            statusCode: error.statusCode || 500,
-            statusMessage: error.statusMessage || error.message || 'Failed to update course',
+            statusCode: err.statusCode || 500,
+            statusMessage: err.statusMessage || err.message || 'Failed to update course',
         });
     }
 });
