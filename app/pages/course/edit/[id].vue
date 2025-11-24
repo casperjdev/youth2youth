@@ -291,18 +291,36 @@ const embedUrl = computed(() => {
       </div>
     </header>
 
-    <div class="border-b border-neutral-800 flex items-center justify-between px-2.5 max-md:overflow-x-scroll h-10 shrink-0">
+    <div class="border-b border-neutral-800 flex items-center justify-between px-2.5 max-md:overflow-x-scroll h-10 shrink-0 bg-neutral-900/30">
       <div class="flex items-center gap-0.5">
-        <button @click="formatBold" class="w-7 h-7 flex items-center justify-center rounded text-neutral-400 hover:bg-neutral-700 hover:text-emerald-400">B</button>
-        <button @click="formatItalic" class="w-7 h-7 flex items-center justify-center rounded text-neutral-400 hover:bg-neutral-700 hover:text-emerald-400 italic">I</button>
-        <div class="w-px h-4 mx-1 shrink-0"></div>
-        <button @click="formatList" class="w-7 h-7 flex items-center justify-center rounded text-neutral-400 hover:bg-neutral-700 hover:text-emerald-400">
+
+        <button @mousedown.prevent @click="formatBold" class="w-7 h-7 flex items-center justify-center rounded text-neutral-400 hover:bg-neutral-700 hover:text-emerald-400 font-bold text-xs transition-colors">B</button>
+        <button @mousedown.prevent @click="formatItalic" class="w-7 h-7 flex items-center justify-center rounded text-neutral-400 hover:bg-neutral-700 hover:text-emerald-400 italic font-serif text-xs transition-colors">I</button>
+
+        <div class="w-px h-4 bg-neutral-800 mx-1 shrink-0"></div>
+
+        <button @mousedown.prevent @click="formatH2" class="w-7 h-7 flex items-center justify-center rounded text-neutral-400 hover:bg-neutral-700 hover:text-emerald-400 text-[10px] font-bold transition-colors">H2</button>
+        <button @mousedown.prevent @click="formatH3" class="w-7 h-7 flex items-center justify-center rounded text-neutral-400 hover:bg-neutral-700 hover:text-emerald-400 text-[10px] font-bold transition-colors">H3</button>
+
+        <div class="w-px h-4 bg-neutral-800 mx-1 shrink-0"></div>
+
+        <button @mousedown.prevent @click="formatList" class="w-7 h-7 flex items-center justify-center rounded text-neutral-400 hover:bg-neutral-700 hover:text-emerald-400 transition-colors">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
+
+        <button @mousedown.prevent @click="formatCode" class="w-7 h-7 flex items-center justify-center rounded text-neutral-400 hover:bg-neutral-700 hover:text-emerald-400 transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+        </button>
+
+        <button @mousedown.prevent @click="formatBlockquote" class="w-7 h-7 flex items-center justify-center rounded text-neutral-400 hover:bg-neutral-700 hover:text-emerald-400 transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+        </button>
+
       </div>
+
       <div class="flex rounded-lg p-0.5 md:hidden shrink-0 ml-2 border border-neutral-800">
-        <button @click="activeTab = 'write'" :class="['px-2.5 py-1 text-[9px] font-bold uppercase', activeTab === 'write' ? 'bg-neutral-700 text-white' : 'text-neutral-500']">Edit</button>
-        <button @click="activeTab = 'preview'" :class="['px-2.5 py-1 text-[9px] font-bold uppercase', activeTab === 'preview' ? 'bg-emerald-600 text-white' : 'text-neutral-500']">Preview</button>
+        <button @click="activeTab = 'write'" :class="['px-2.5 py-1 text-[9px] font-bold uppercase transition-colors', activeTab === 'write' ? 'bg-neutral-700 text-white' : 'text-neutral-500']">Edit</button>
+        <button @click="activeTab = 'preview'" :class="['px-2.5 py-1 text-[9px] font-bold uppercase transition-colors', activeTab === 'preview' ? 'bg-emerald-600 text-white' : 'text-neutral-500']">Preview</button>
       </div>
     </div>
 
