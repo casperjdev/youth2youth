@@ -45,8 +45,9 @@ const myCourses = computed(() => {
         <div
             v-for="course in myCourses"
             :key="course.documentId"
-            class="flex gap-4 p-3 rounded-lg bg-neutral-900/50 hover:bg-neutral-900/70 transition-colors">
-          <div class="flex-shrink-0 w-32 h-20 rounded overflow-hidden bg-neutral-800">
+            class="flex flex-col sm:flex-row gap-4 p-3 rounded-lg bg-neutral-900/50 hover:bg-neutral-900/70 transition-colors"
+        >
+          <div class="flex-shrink-0 w-full h-40 sm:w-32 sm:h-20 rounded overflow-hidden bg-neutral-800">
             <img
                 v-if="course.cover"
                 :src="useStrapiImage(course.cover.url)"
@@ -55,6 +56,7 @@ const myCourses = computed(() => {
             />
             <div v-else class="w-full h-full bg-gradient-to-br from-neutral-700 to-neutral-800"></div>
           </div>
+
           <div class="flex-1 min-w-0 flex flex-col justify-between">
             <div>
               <h3 class="font-semibold text-neutral-50 text-sm line-clamp-1 mb-1">
@@ -64,18 +66,24 @@ const myCourses = computed(() => {
                 {{ course.description }}
               </p>
             </div>
-            <div v-if="course.tags && course.tags.length > 0" class="flex flex-wrap gap-1 mt-2">
-              <span
-                  v-for="tag in course.tags.slice(0, 3)"
-                  :key="tag.documentId"
-                  class="text-2xs px-2 py-0.5 rounded bg-neutral-800 text-neutral-300">
-                {{ tag.label }}
-              </span>
+
+            <div
+                v-if="course.tags && course.tags.length > 0"
+                class="flex flex-wrap gap-1 mt-2"
+            >
+      <span
+          v-for="tag in course.tags.slice(0, 3)"
+          :key="tag.documentId"
+          class="text-2xs justify-center px-2 py-0.5 rounded bg-neutral-800 text-neutral-300"
+      >
+        {{ tag.label }}
+      </span>
             </div>
           </div>
-          <div class="flex-shrink-0 flex gap-2 items-center">
+
+          <div class="flex-shrink-0 flex gap-2 items-center justify-center max-md:flex-row flex-col sm:items-center">
             <NuxtLink :to="`/course/edit/${course.documentId}`">
-              <Button variant="outline" size="sm" class="text-xs">Edit</Button>
+              <Button variant="clear" size="sm" class="text-xs">Edit</Button>
             </NuxtLink>
             <NuxtLink :to="`/course/view/${course.documentId}`">
               <Button size="sm" class="text-xs">View</Button>
