@@ -10,8 +10,16 @@ export default defineEventHandler<Promise<{ res: Course } | null>>(async (event)
 	const id = getRouterParam(event, 'id');
 
 	try {
-		const res = await $fetch<Course>(`${STRAPI}/courses/${id}?populate=*`, {
+		const res = await $fetch<Course>(`${STRAPI}/courses/${id}`, {
 			headers: { Authorization: `Bearer ${jwt}` },
+		});
+
+		setCookie(event, 'lastCourse', id!, {
+			httpOnly: false,
+			secure: true,
+			sameSite: 'lax',
+			path: '/',
+			maxAge: 60 * 60 * 24 * 7,
 		});
 
 		return { res };
