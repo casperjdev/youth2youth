@@ -9,18 +9,24 @@ const { user } = useAuth();
 // Last course
 const id = useCookie('lastCourse');
 const latestCourse = ref<Course | null>();
+const latestLoading = ref(false);
 const recommendedCourses = ref<Course[] | null>();
+const reccLoading = ref(false);
 
 onMounted(async () => {
 	if (id.value) {
+		latestLoading.value = true;
 		const response = await $fetch<any>(`/api/courses/${id.value}`);
 		const strapiResponse = response.res || response;
 		latestCourse.value = strapiResponse?.data || strapiResponse;
+		latestLoading.value = false;
 	}
 
 	if (user) {
+		reccLoading.value = true;
 		const res = await $fetch(`/api/auth/recommended`);
 		recommendedCourses.value = res?.res.data;
+		reccLoading.value = false;
 	}
 });
 </script>
@@ -46,7 +52,12 @@ onMounted(async () => {
 			<Card
 				class="flex-1 bg-black/50! text-neutral-950/50! backdrop-blur-sm flex flex-col gap-2 max-h-64">
 				<h1 class="text-neutral-50 font-extrabold sm:text-xs text-2xs">Continue</h1>
-				<Course v-if="latestCourse" :data="latestCourse" />
+				<Course v-if="!latestLoading && latestCourse" :data="latestCourse" />
+				<div
+					v-else-if="latestLoading"
+					class="text-neutral-200 w-full h-full grid place-items-center sm:text-xs text-2xs">
+					<Icon name="lucide:loader-2" class="text-neutral-50 w-8 h-8 animate-spin" />
+				</div>
 				<div
 					v-else
 					class="text-neutral-200 w-full h-full grid place-items-center sm:text-xs text-2xs">
@@ -58,6 +69,7 @@ onMounted(async () => {
 				<h1 class="text-neutral-50 font-extrabold sm:text-xs text-2xs">Recommended for you</h1>
 				<div
 					v-if="
+						!reccLoading &&
 						user?.tags &&
 						user.tags.length > 0 &&
 						recommendedCourses &&
@@ -65,6 +77,11 @@ onMounted(async () => {
 					"
 					class="flex flex-col gap-2 overflow-y-auto h-full">
 					<Course v-for="course in recommendedCourses.slice(0, 4)" :data="course" />
+				</div>
+				<div
+					v-else-if="reccLoading"
+					class="text-neutral-200 w-full h-full grid place-items-center sm:text-xs text-2xs">
+					<Icon name="lucide:loader-2" class="text-neutral-50 w-8 h-8 animate-spin" />
 				</div>
 				<div
 					v-else-if="recommendedCourses?.length == 0"
