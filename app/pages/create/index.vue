@@ -25,10 +25,10 @@ const myCourses = computed(() => {
 
 		<Card
 			class="w-full backdrop-blur-sm bg-black/10! text-neutral-950/10! flex flex-col gap-4 flex-1 overflow-hidden">
-			<div class="flex items-center justify-between">
-				<h2 class="text-lg text-neutral-50 font-bold">Your Courses</h2>
+			<div class="flex items-center md:flex-row flex-col justify-between">
+				<h2 class="sm:text-xs text-2xs text-neutral-50 font-extrabold">Your Courses</h2>
 				<NuxtLink to="/create/new">
-					<Button size="sm">+ Create Course</Button>
+					<Button class="block">+ Create Course</Button>
 				</NuxtLink>
 			</div>
 			<div class="flex-1 overflow-y-auto space-y-3">
@@ -39,8 +39,8 @@ const myCourses = computed(() => {
 				<div
 					v-else-if="myCourses.length === 0"
 					class="flex flex-col items-center justify-center py-12 gap-3">
-					<p class="text-neutral-200">You haven't created any courses yet.</p>
-					<NuxtLink to="/create/new">
+					<p class="text-neutral-200 sm:text-xs text-2xs">No courses found.</p>
+					<NuxtLink class="md:block hidden" to="/create/new">
 						<Button>Create Your First Course</Button>
 					</NuxtLink>
 				</div>
