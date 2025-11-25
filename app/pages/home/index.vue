@@ -14,20 +14,38 @@ const recommendedCourses = ref<Course[] | null>();
 const reccLoading = ref(false);
 
 onMounted(async () => {
+	const promises = [];
+
 	if (id.value) {
 		latestLoading.value = true;
-		const response = await $fetch<any>(`/api/courses/${id.value}`);
-		const strapiResponse = response.res || response;
-		latestCourse.value = strapiResponse?.data || strapiResponse;
-		latestLoading.value = false;
+
+		const latestPromise = $fetch<any>(`/api/courses/${id.value}`)
+			.then((response) => {
+				const strapiResponse = response.res || response;
+				latestCourse.value = strapiResponse?.data || strapiResponse;
+			})
+			.finally(() => {
+				latestLoading.value = false;
+			});
+
+		promises.push(latestPromise);
 	}
 
 	if (user) {
 		reccLoading.value = true;
-		const res = await $fetch(`/api/auth/recommended`);
-		recommendedCourses.value = res?.res.data;
-		reccLoading.value = false;
+
+		const recPromise = $fetch(`/api/auth/recommended`)
+			.then((res) => {
+				recommendedCourses.value = res?.res.data;
+			})
+			.finally(() => {
+				reccLoading.value = false;
+			});
+
+		promises.push(recPromise);
 	}
+
+	await Promise.all(promises);
 });
 </script>
 
