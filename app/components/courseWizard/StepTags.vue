@@ -81,7 +81,7 @@ const isSelected = (label: string) => {
       isActive && 'translate-x-0 opacity-100'
     ]"
   >
-    <div class="flex flex-col gap-4 px-6">
+    <div class="flex flex-col  gap-4 px-6">
       <div>
         <h2 class="text-2xl font-semibold mb-1 text-white">Select Tags</h2>
         <p class="text-sm text-neutral-300">
@@ -101,7 +101,7 @@ const isSelected = (label: string) => {
         No tags available. Contact admin to create tags.
       </div>
 
-      <div v-else class="flex flex-wrap gap-2 max-h-32 overflow-y-auto py-2">
+      <div v-else class="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2">
         <button
             v-for="tag in availableTags"
             :key="tag.id"
