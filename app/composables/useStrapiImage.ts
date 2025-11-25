@@ -1,12 +1,14 @@
 export const useStrapiImage = (path?: string | null) => {
     if (!path) return '';
 
-    // If already a full URL, use as-is
+    // Construct the full Strapi URL
+    let fullUrl: string;
     if (path.startsWith('http')) {
-        return `/api/proxy-image?url=${encodeURIComponent(path)}`;
+        fullUrl = path;
+    } else {
+        fullUrl = `http://54.38.138.75:1337${path.startsWith('/') ? path : '/' + path}`;
     }
 
-    // Otherwise, construct the Strapi URL
-    const strapiUrl = `http://54.38.138.75:1337${path}`;
-    return `/api/proxy-image?url=${encodeURIComponent(strapiUrl)}`;
+    // Return the proxy URL with encoded parameter
+    return `/api/proxy-image?url=${encodeURIComponent(fullUrl)}`;
 };

@@ -18,22 +18,36 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
+        console.log('Fetching image:', imageUrl);
+
+        // Use native fetch
         const response = await fetch(imageUrl);
 
         if (!response.ok) {
+            console.error('Fetch failed:', response.status, response.statusText);
             throw createError({
                 statusCode: response.status,
-                statusMessage: 'Image not found'
+                statusMessage: `Image fetch failed: ${response.statusText}`
             });
         }
 
-        const buffer = await response.arrayBuffer();
+        // Get the image as array buffer
+        const imageBuffer = await response.arrayBuffer();
+        console.log('Image fetched, size:', imageBuffer.byteLength);
 
-        setHeader(event, 'Content-Type', response.headers.get('content-type') || 'image/jpeg');
-        setHeader(event, 'Cache-Control', 'public, max-age=31536000, immutable');
+        // Get content type
+        const contentType = response.headers.get('content-type') || 'image/jpeg';
 
-        return buffer;
+        // Set response headers
+        setResponseHeader(event, 'Content-Type', contentType);
+        setResponseHeader(event, 'Content-Length', imageBuffer.byteLength.toString());
+        setResponseHeader(event, 'Cache-Control', 'public, max-age=31536000, immutable');
+
+        // Return the buffer directly
+        return new Uint8Array(imageBuffer);
+
     } catch (e: any) {
+        console.error('Proxy image error:', e);
         throw createError({
             statusCode: e.statusCode || 500,
             statusMessage: e.statusMessage || 'Failed to fetch image',
