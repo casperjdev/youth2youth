@@ -187,7 +187,7 @@ const getAuthorName = (c: Course) => c.authors?.[0]?.username || c.authors?.[0]?
       >
         <div v-if="!loading && courseData" class="flex flex-col items-center">
 
-          <div class="mb-6 lg:mb-8 relative group">
+          <div class="mb-6 -mt-6 lg:mb-8 relative group">
             <div class="absolute inset-0 bg-emerald-500 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
             <div class="relative w-20 h-20 lg:w-24 lg:h-24 rounded-full bg-neutral-900 border-2 border-emerald-500/50 flex items-center justify-center shadow-2xl shadow-emerald-500/20">
               <Icon name="lucide:trophy" class="w-10 h-10 lg:w-12 lg:h-12 text-emerald-400 drop-shadow-lg" />
@@ -196,14 +196,14 @@ const getAuthorName = (c: Course) => c.authors?.[0]?.username || c.authors?.[0]?
             <Icon name="lucide:star" class="absolute -bottom-1 -left-2 w-5 h-5 lg:w-6 lg:h-6 text-yellow-400 animate-bounce delay-300 drop-shadow-lg" />
           </div>
 
-          <h1 class="text-xl lg:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-2 leading-tight">
+          <h1 class="text-xl -mt-6 lg:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-1 leading-tight">
             Congratulations!
           </h1>
-          <p class="text-neutral-400 text-base lg:text-lg lg:text-xl mb-8 lg:mb-10 max-w-xs lg:max-w-lg mx-auto">
+          <p class="text-neutral-400 text-base lg:text-lg lg:text-xl lg:mb-10 max-w-xs lg:max-w-lg mx-auto">
             You just crushed it. Another milestone down.
           </p>
 
-          <div class="w-full bg-neutral-900/50 backdrop-blur-md border border-neutral-800 p-4 lg:p-6 rounded-2xl shadow-xl transform transition-transform active:scale-95 lg:hover:scale-[1.02] duration-300 mb-8 lg:mb-10 text-left flex gap-3 lg:gap-5 items-center">
+          <div class="w-full bg-neutral-900/50 backdrop-blur-md border border-neutral-800 p-4 lg:p-6 rounded-2xl shadow-xl transform transition-transform active:scale-95 lg:hover:scale-[1.02] duration-300 mb-8 lg:mb-4 text-left flex gap-3 lg:gap-5 items-center">
 
             <div class="shrink-0 max-lg:hidden w-16 h-16 lg:w-24 lg:h-24 rounded-xl bg-neutral-800 overflow-hidden border border-neutral-700 relative">
               <img
@@ -231,22 +231,6 @@ const getAuthorName = (c: Course) => c.authors?.[0]?.username || c.authors?.[0]?
                 By {{ getAuthorName(courseData) }}
               </p>
             </div>
-          </div>
-
-          <div class="flex max-lg:items-center flex-col lg:flex-row gap-3 lg:gap-4 w-full lg:w-auto">
-            <Button
-                @click="navigateTo('/home')"
-                class="w-full lg:w-auto order-2 lg:order-1 px-8 py-3 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl font-bold transition-all border border-neutral-700"
-            >
-              Back to Courses
-            </Button>
-
-            <Button
-                class="w-full lg:w-auto order-1 lg:order-2 px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-black rounded-xl font-bold transition-all shadow-lg shadow-emerald-900/40 flex items-center justify-center gap-2 group"
-            >
-              <Icon name="lucide:download" class="w-4 h-4 group-hover:scale-110 transition-transform" />
-              Download Certificate
-            </Button>
           </div>
         </div>
 
