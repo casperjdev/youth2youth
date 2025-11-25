@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type CourseList, type Course } from '~/types/strapi/courses';
+import type { Course } from '~/types/strapi/courses';
 
 definePageMeta({
 	layout: 'dashboard',
